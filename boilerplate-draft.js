@@ -1,68 +1,164 @@
-var ZA = {}
+var ZA = {};
+var $appName = ZA;
 
-ZA.CoolObj = function() {
-
-  ZA.CoolObj.prototype.getClassName = function() { 
-    var funcNameRegex = /function (.{1,})\(/;
-    var results = (funcNameRegex).exec((this).constructor.toString());
-    return (results && results.length > 1) ? results[1] : "";
-  } ;
+(function($x){
   
-}
-
-
-ZA.Product = function Product(name, price) {
-  ZA.CoolObj.call(this);
-  this.name = name;
-  this.price = price;
-
-  if (price < 0){
-    throw RangeError(this.name + ' has negative price');
-  }
+    function getFuncName(f){
+      var funcNameRegex = /function (.{1,})\(/;
+      var results = (funcNameRegex).exec(f);
+      return (results && results.length > 1) ? results[1] : "";
+    }
   
-  f1 = function(){
-    return this.name;
-  }
+    function include(child){
+      var x = getFuncName(child);
+      $x[x] = child;
+    } 
 
-  ZA.Product.prototype.getProductName = function(){
-    return f1.call(this);
-  }
-}
+    function inherit(child,parent){
+      include(child);
+      child.prototype = Object.create(parent.prototype);
+      child.prototype.constructor = child; 
+    } 
 
-ZA.Product.prototype = Object.create(ZA.CoolObj.prototype);
-ZA.Product.prototype.constructor = ZA.Product; 
+    $x.getFuncName = getFuncName;
+    $x.include = include;
+    $x.inherit = inherit;
   
+  
+})($appName);
 
-ZA.Food = function Food(name, price) {
-  ZA.Product.call(this, name, price);
-  this.category = 'food';
-}
+(function($x){
+ 
+  function CoolObj() {
+    
+    CoolObj.prototype.getClassName = function() { 
+      return $x.getFuncName((this).constructor);
+    }
 
-ZA.Food.prototype = Object.create(ZA.Product.prototype);
-ZA.Food.prototype.constructor = ZA.Food; 
+  }
+  $x.include(CoolObj);
+  
+})($appName);
 
-ZA.Cake = function Cake(name, price) {
-  ZA.Food.call(this, name, price);
-  this.category = 'cake';
-}
+(function($x){
 
-ZA.Cake.prototype = Object.create(ZA.Food.prototype);
-ZA.Cake.prototype.constructor = ZA.Cake; 
+  function Product(name, price) {
+    $x.CoolObj.call(this);
+    this.name = name;
+    var _price = price;
+
+    if (price < 0) {
+      throw RangeError(this.name + ' has negative price');
+    }
+
+    function x(){
+      return this.name;
+    }
+
+    Product.prototype.getProductName = function(){
+      return x.call(this);
+    }
+    
+    Product.prototype.getPrice = function(){
+      return _price;
+    }
+  }
+  $x.inherit(Product, $x.CoolObj);
+  
+})($appName);
 
 
-var bread = new ZA.Product('bread', 15);
-var cheese = new ZA.Food('feta', 5);
-var fun = new ZA.Cake('chocolate', 40);
+(function($x){
 
-console.log(bread.getClassName());
-console.log(cheese.getProductName());
+  function Food(name, price) {
+    $x.Product.call(this, name, price);
+    this.category = 'food';
+    
+    function descr(){
+      return this.category + 
+        ': ' + this.getProductName() +
+        ', ' + this.getPrice();
+    }
+    Food.prototype.getDescr = function(){
+      return descr.call(this);
+    }
+  }
+  $x.inherit(Food, $x.Product);
+
+})($appName);
+
+
+(function($x){
+  
+  function Cake(name, price) {
+    $x.Food.call(this, name, price);
+    this.category = 'cake';
+    
+    Cake.prototype.isChocolate = function(){
+        return this.name === 'chocolate cake';
+    }
+
+  }
+
+  $x.inherit(Cake, $x.Food);
+
+})($appName);
+
+(function($x){
+  
+  function Fruit(color, name, price) {
+    $x.Food.call(this, name, price);
+    this.category = 'fruit';
+    var _color = color;
+    
+    function getColor() {
+      return _color;
+    }
+
+    function getFullName() {
+      return _color + ' ' + this.getProductName();
+    }
+
+    Fruit.prototype.getColor = function(){
+      return getColor.call(this);
+    }
+    
+    Fruit.prototype.getFullName = function(){
+      return getFullName.call(this);
+    }
+
+  }
+
+  $x.inherit(Fruit, $x.Food);
+
+})($appName);
+
+/// TEST
+
+var co = new ZA.CoolObj();
+console.log(co.getClassName());
+
+var pr = new ZA.Product('bread', 5);
+console.log(pr.getClassName());
+console.log(pr.getProductName());
+
+var cheese = new ZA.Food('feta', 15);
 console.log(cheese.getClassName());
-console.log(fun.getClassName());
-console.log(fun.getProductName());
+console.log(cheese.getProductName());
+console.log(cheese.getPrice());
+console.log(cheese.category);
+console.log(cheese.getDescr());
 
+var ck = new ZA.Cake('chocolate cake', 25);
+console.log(ck.getClassName());
+console.log(ck.getProductName());
+console.log(ck.category);
+console.log(ck.getPrice());
+console.log(ck.isChocolate());
 
-
-/*
-Exception: TypeError: ZA.Cake is undefined
-@Scratchpad/1:49:21
-*/
+var a = new ZA.Fruit('green', 'apple', 1.5);
+console.log(a.getClassName());
+console.log(a.getProductName());
+console.log(a.category);
+console.log(a.getPrice());
+console.log(a.getFullName());
