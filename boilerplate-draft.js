@@ -1,7 +1,6 @@
-var ZA = {};
-var $appName = ZA;
+var ZA_LIB = {};
 
-(function($x){
+(function(ZA_LIB){
   
     function getFuncName(f){
       var funcNameRegex = /function (.{1,})\(/;
@@ -9,41 +8,45 @@ var $appName = ZA;
       return (results && results.length > 1) ? results[1] : "";
     }
   
-    function include(child){
+    function include($x, child){
       var x = getFuncName(child);
       $x[x] = child;
     } 
 
-    function inherit(child,parent){
-      include(child);
+    function inherit($x, child,parent){
+      include($x, child);
       child.prototype = Object.create(parent.prototype);
       child.prototype.constructor = child; 
     } 
 
-    $x.getFuncName = getFuncName;
-    $x.include = include;
-    $x.inherit = inherit;
-  
-  
-})($appName);
+    function BaseObj() {
 
-(function($x){
- 
-  function CoolObj() {
-    
-    CoolObj.prototype.getClassName = function() { 
-      return $x.getFuncName((this).constructor);
+      BaseObj.prototype.getClassName = function() { 
+        return getFuncName((this).constructor);
+      }
+
     }
-
-  }
-  $x.include(CoolObj);
+    include(ZA_LIB, BaseObj);
   
-})($appName);
+    ZA_LIB.getFuncName = getFuncName;
+    ZA_LIB.include = include;
+    ZA_LIB.inherit = inherit;
+  
+  
+})(ZA_LIB);
 
-(function($x){
+var ZA_APP = {};
+(function(ZA_APP){
+
+  ZA_APP.Version = '1.0.0';
+  
+  
+})(ZA_APP);
+
+(function(ZA_APP){
 
   function Product(name, price) {
-    $x.CoolObj.call(this);
+    ZA_LIB.BaseObj.call(this);
     this.name = name;
     var _price = price;
 
@@ -63,15 +66,15 @@ var $appName = ZA;
       return _price;
     }
   }
-  $x.inherit(Product, $x.CoolObj);
+  ZA_LIB.inherit(ZA_APP, Product, ZA_LIB.BaseObj);
   
-})($appName);
+})(ZA_APP);
 
 
-(function($x){
+(function(ZA_APP){
 
   function Food(name, price) {
-    $x.Product.call(this, name, price);
+    ZA_APP.Product.call(this, name, price);
     this.category = 'food';
     
     function descr(){
@@ -83,15 +86,15 @@ var $appName = ZA;
       return descr.call(this);
     }
   }
-  $x.inherit(Food, $x.Product);
+  ZA_LIB.inherit(ZA_APP, Food, ZA_APP.Product);
 
-})($appName);
+})(ZA_APP);
 
 
-(function($x){
+(function(ZA_APP){
   
   function Cake(name, price) {
-    $x.Food.call(this, name, price);
+    ZA_APP.Food.call(this, name, price);
     this.category = 'cake';
     
     Cake.prototype.isChocolate = function(){
@@ -100,14 +103,14 @@ var $appName = ZA;
 
   }
 
-  $x.inherit(Cake, $x.Food);
+  ZA_LIB.inherit(ZA_APP, Cake, ZA_APP.Food);
 
-})($appName);
+})(ZA_APP);
 
-(function($x){
+(function(ZA_APP){
   
   function Fruit(color, name, price) {
-    $x.Food.call(this, name, price);
+    ZA_APP.Food.call(this, name, price);
     this.category = 'fruit';
     var _color = color;
     
@@ -129,34 +132,34 @@ var $appName = ZA;
 
   }
 
-  $x.inherit(Fruit, $x.Food);
+  ZA_LIB.inherit(ZA_APP, Fruit, ZA_APP.Food);
 
-})($appName);
+})(ZA_APP);
 
 /// TEST
 
-var co = new ZA.CoolObj();
+var co = new ZA_LIB.BaseObj();
 console.log(co.getClassName());
 
-var pr = new ZA.Product('bread', 5);
+var pr = new ZA_APP.Product('bread', 5);
 console.log(pr.getClassName());
 console.log(pr.getProductName());
 
-var cheese = new ZA.Food('feta', 15);
+var cheese = new ZA_APP.Food('feta', 15);
 console.log(cheese.getClassName());
 console.log(cheese.getProductName());
 console.log(cheese.getPrice());
 console.log(cheese.category);
 console.log(cheese.getDescr());
 
-var ck = new ZA.Cake('chocolate cake', 25);
+var ck = new ZA_APP.Cake('chocolate cake', 25);
 console.log(ck.getClassName());
 console.log(ck.getProductName());
 console.log(ck.category);
 console.log(ck.getPrice());
 console.log(ck.isChocolate());
 
-var a = new ZA.Fruit('green', 'apple', 1.5);
+var a = new ZA_APP.Fruit('green', 'apple', 1.5);
 console.log(a.getClassName());
 console.log(a.getProductName());
 console.log(a.category);
