@@ -1,3 +1,4 @@
+"use strict";
 var ZA_LIB = {};
 
 (function(ZA_LIB){
@@ -23,9 +24,10 @@ var ZA_LIB = {};
 
       BaseObj.prototype.getClassName = function() { 
         return getFuncName((this).constructor);
-      }
+      };
 
     }
+
     include(ZA_LIB, BaseObj);
   
     ZA_LIB.getFuncName = getFuncName;
@@ -38,7 +40,7 @@ var ZA_LIB = {};
 var ZA_APP = {};
 (function(ZA_APP){
 
-  ZA_APP.Version = '1.0.0';
+  ZA_APP.Version = "1.0.0";
   
   
 })(ZA_APP);
@@ -51,20 +53,21 @@ var ZA_APP = {};
     var _price = price;
 
     if (price < 0) {
-      throw RangeError(this.name + ' has negative price');
+      throw new RangeError(this.name + " has negative price");
     }
 
-    function x(){
-      return this.name;
+    function x($t){
+      return $t.name;
     }
 
     Product.prototype.getProductName = function(){
-      return x.call(this);
-    }
+      return x.call(this, this);
+    };
     
     Product.prototype.getPrice = function(){
       return _price;
-    }
+    };
+
   }
   ZA_LIB.inherit(ZA_APP, Product, ZA_LIB.BaseObj);
   
@@ -75,16 +78,17 @@ var ZA_APP = {};
 
   function Food(name, price) {
     ZA_APP.Product.call(this, name, price);
-    this.category = 'food';
+    this.category = "food";
     
-    function descr(){
-      return this.category + 
-        ': ' + this.getProductName() +
-        ', ' + this.getPrice();
+    function descr($t){
+      var description = $t.category +
+        ": " + $t.getProductName() +
+        ", " + $t.getPrice();
+      return description;
     }
     Food.prototype.getDescr = function(){
-      return descr.call(this);
-    }
+      return descr.call(this, this);
+    };
   }
   ZA_LIB.inherit(ZA_APP, Food, ZA_APP.Product);
 
@@ -95,11 +99,11 @@ var ZA_APP = {};
   
   function Cake(name, price) {
     ZA_APP.Food.call(this, name, price);
-    this.category = 'cake';
+    this.category = "cake";
     
     Cake.prototype.isChocolate = function(){
-        return this.name === 'chocolate cake';
-    }
+        return this.name === "chocolate cake";
+    };
 
   }
 
@@ -111,24 +115,24 @@ var ZA_APP = {};
   
   function Fruit(color, name, price) {
     ZA_APP.Food.call(this, name, price);
-    this.category = 'fruit';
+    this.category = "fruit";
     var _color = color;
     
     function getColor() {
       return _color;
     }
 
-    function getFullName() {
-      return _color + ' ' + this.getProductName();
+    function getFullName($t) {
+      return _color + " " + $t.getProductName();
     }
 
     Fruit.prototype.getColor = function(){
       return getColor.call(this);
-    }
+    };
     
     Fruit.prototype.getFullName = function(){
-      return getFullName.call(this);
-    }
+      return getFullName.call(this, this);
+    };
 
   }
 
@@ -141,25 +145,25 @@ var ZA_APP = {};
 var co = new ZA_LIB.BaseObj();
 console.log(co.getClassName());
 
-var pr = new ZA_APP.Product('bread', 5);
+var pr = new ZA_APP.Product("bread", 5);
 console.log(pr.getClassName());
 console.log(pr.getProductName());
 
-var cheese = new ZA_APP.Food('feta', 15);
+var cheese = new ZA_APP.Food("feta", 15);
 console.log(cheese.getClassName());
 console.log(cheese.getProductName());
 console.log(cheese.getPrice());
 console.log(cheese.category);
 console.log(cheese.getDescr());
 
-var ck = new ZA_APP.Cake('chocolate cake', 25);
+var ck = new ZA_APP.Cake("chocolate cake", 25);
 console.log(ck.getClassName());
 console.log(ck.getProductName());
 console.log(ck.category);
 console.log(ck.getPrice());
 console.log(ck.isChocolate());
 
-var a = new ZA_APP.Fruit('green', 'apple', 1.5);
+var a = new ZA_APP.Fruit("green", "apple", 1.5);
 console.log(a.getClassName());
 console.log(a.getProductName());
 console.log(a.category);
