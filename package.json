@@ -1,0 +1,37 @@
+{
+  "name": "js-boilerplate-experimental",
+  "version": "1.0.0",
+  "description": "JS boilerplate experimental",
+  "main": "boilerplate-draft.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkvster/js-boilerplate-experimental.git"
+  },
+  "keywords": [
+    "js",
+    "boilerplate",
+    "template",
+    "modularity",
+    "experiment"
+  ],
+  "author": "mkvster",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mkvster/js-boilerplate-experimental/issues"
+  },
+  "homepage": "https://github.com/mkvster/js-boilerplate-experimental#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jscs": "^2.0.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-print": "^1.2.0",
+    "gulp-util": "^3.0.6",
+    "jscs": "^2.1.1",
+    "jshint": "^2.8.0",
+    "jshint-stylish": "^2.0.1"
+  }
+}
