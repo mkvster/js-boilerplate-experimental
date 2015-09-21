@@ -6,5 +6,6 @@
   "quotmark": true,
   "undef": true,
   "unused": true,
-  "devel":true
+  "devel":true,
+  "strict":false
 }
