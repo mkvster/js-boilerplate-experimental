@@ -28,9 +28,28 @@ var ZA_LIB = {};
 
   }
 
+  function getLogTime(currentdate){
+    currentdate = currentdate || (new Date());
+    var datetime = currentdate.getFullYear() +
+      "." + (currentdate.getMonth()+1)  +
+      "." + currentdate.getDate() +
+      "_" + currentdate.getHours() +
+      ":" + currentdate.getMinutes() +
+      ":" + currentdate.getSeconds();
+    return datetime;
+  }
+
+  function DefaultLogTimeFormatter(){
+
+    DefaultLogTimeFormatter.prototype.getTimestamp = function(currentdate) {
+      return getLogTime((this).constructor);
+    };
+  }
+
   include(ZA_LIB, BaseObj);
 
   ZA_LIB.getFuncName = getFuncName;
+  ZA_LIB.getLogTime = getLogTime;
   ZA_LIB.include = include;
   ZA_LIB.inherit = inherit;
 
